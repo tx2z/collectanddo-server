@@ -1,0 +1,55 @@
+version: '3.6'
+services:
+  postgres:
+    container_name: api-server-postgres
+    image: postgres:10.5
+    restart: always
+    environment:
+      - POSTGRES_DB=collectanddo
+      - POSTGRES_USER=collectanddo
+      - POSTGRES_PASSWORD
+    volumes:
+      - ./collectanddo.init.sql:/docker-entrypoint-initdb.d/init.sql
+  graphql-engine:
+    container_name: api-server-hasura
+    image: hasura/graphql-engine:v1.0.0-alpha34
+    depends_on:
+      - "postgres"
+    restart: always
+    environment:
+      # database url to connect
+      HASURA_GRAPHQL_DATABASE_URL: postgres://collectanddo:${POSTGRES_PASSWORD}@postgres:5432/collectanddo
+      # enable the console served by server
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set "false" to disable console
+      ## uncomment next line to set an access key
+      HASURA_GRAPHQL_ACCESS_KEY: ${HASURA_GRAPHQL_ACCESS_KEY}
+      HASURA_GRAPHQL_JWT_SECRET: '{"type":"HS256", "key":"${HASURA_GRAPHQL_JWT_SECRET}", "claims_namespace": "https://hasura.io/jwt/claims"}'
+    command:
+      - graphql-engine 
+      - serve
+  app:
+    container_name: auth-server-express
+    restart: always
+    build: ./
+    volumes:
+      - .:/app
+      - /app/node_modules
+    links:
+      - mongo
+  mongo:
+    container_name: auth-server-mongo
+    image: mongo
+  caddy:
+    image: abiosoft/caddy:0.11.0
+    depends_on:
+      - "graphql-engine"
+      - "app"
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/Caddyfile
+      - caddy_certs:/root/.caddy
+volumes:
+  caddy_certs:

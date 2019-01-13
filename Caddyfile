@@ -1,0 +1,11 @@
+# replace for API (sub)domains
+auth.xxxxxxxxxxxxxxx {
+    proxy / app:3000 {
+        websocket
+    }
+}
+api.xxxxxxxxxxxxxxx {
+    proxy / graphql-engine:8080 {
+        websocket
+    }
+}

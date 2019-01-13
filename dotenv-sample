@@ -1,0 +1,6 @@
+HASURA_GRAPHQL_ACCESS_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+HASURA_GRAPHQL_JWT_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+POSTGRES_PASSWORD=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+MONGO_URI=mongodb://auth-server-mongo:27017/collectanddo
+HASURA_URI=http://xxxxxxxxxxxxxxx/v1alpha1/graphql
+HASURA_ROLE=xxxxxxx
